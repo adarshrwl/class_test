@@ -16,7 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
     
     Timer(const Duration(seconds: 2), () {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const GridViewScreen()),
+        MaterialPageRoute(builder: (context) => const GridViewScreen(name: 'Adarsh',)),
       );
     });
   }
