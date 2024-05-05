@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class GridViewScreen extends StatefulWidget {
-  final String name; // Name passed to create the grid buttons
+  final String name;
 
   const GridViewScreen({super.key, required this.name});
 
@@ -19,7 +19,6 @@ class _GridViewScreenState extends State<GridViewScreen> {
     // Initialize buttons based on the name length
     buttons = List.generate(widget.name.length, (index) {
       return {
-        'isVisible': true,
         'color': Colors.blue,
         'clickCount': 0,
         'text': widget.name[index],
@@ -27,15 +26,17 @@ class _GridViewScreenState extends State<GridViewScreen> {
     });
   }
 
-  // Logic for button clicks: Change color on first click, hide on the second
+  // Logic for button clicks: Change color on first click, remove on the second
   void _onButtonPressed(int index) {
     setState(() {
       if (buttons[index]['clickCount'] == 0) {
-        buttons[index]['color'] = Colors.green; // First click: Change color
+        // First click: Change color
+        buttons[index]['color'] = Colors.green;
+        buttons[index]['clickCount'] += 1;
       } else {
-        buttons[index]['isVisible'] = false; // Second click: Hide
+        // Second click: Remove the button from the list entirely
+        buttons.removeAt(index);
       }
-      buttons[index]['clickCount'] += 1;
     });
   }
 
@@ -50,17 +51,16 @@ class _GridViewScreenState extends State<GridViewScreen> {
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
         crossAxisCount: 3, // Adjust number of columns as needed
-        children: buttons.map((button) {
-          return button['isVisible']
-              ? ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: button['color'], // Button color
-                  ),
-                  onPressed: () => _onButtonPressed(buttons.indexOf(button)),
-                  child: Text(button['text']),
-                )
-              : Container();
-        }).toList(),
+        children: List.generate(buttons.length, (index) {
+          var button = buttons[index];
+          return ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: button['color'], // Button color
+            ),
+            onPressed: () => _onButtonPressed(index),
+            child: Text(button['text']),
+          );
+        }),
       ),
     );
   }
